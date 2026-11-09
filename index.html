@@ -4,138 +4,336 @@
 <meta charset="UTF-8">
 <!-- 휴대폰 화면 크기에 맞춰 보이게 하는 필수 한 줄이에요 -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#a40f16">
+<meta name="theme-color" content="#0d0d0f">
 <title>권혁태 | 포트폴리오 허브</title>
 
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap">
+<!-- 글꼴: 영문 제목은 우아한 세리프(Cormorant Garamond), 한글 제목은 명조(Noto Serif KR),
+     본문은 고딕(Noto Sans KR), 로고 K는 필기체(Pinyon Script) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Pinyon+Script&display=swap">
 
 <style>
-  /* ===== 1. 색깔 모음: 1일차 프로필과 같은 경희대학교 색상 ===== */
+  /* =========================================================
+     디자인 콘셉트: 초고층 5성급 호텔의 밤
+     - 거의 검은색에 가까운 차콜 배경 + 샴페인 골드 가는 선
+     - 꾸밈은 줄이고, 여백과 글꼴로 고급스러움을 내요
+     ========================================================= */
+
+  /* ===== 1. 색깔 모음 ===== */
   :root {
-    --red:  #a40f16;      /* Kyung Hee Red  ← 메인 */
-    --blue: #0d326f;      /* Kyung Hee Blue */
-    --gold: #c0a353;      /* Kyung Hee Gold */
-    --red-dark: #4f080c;
-    --card: #faf6ee;      /* 호텔 린넨 같은 따뜻한 흰색 */
-    --soft: #e9e1cf;      /* 막대 바탕 */
-    --muted: #5b6785;     /* 연한 글자색 */
+    --bg:     #0d0d0f;   /* 밤하늘 같은 배경 */
+    --panel:  #15151a;   /* 카드 바탕 */
+    --panel2: #1b1b21;   /* 카드에 마우스를 올렸을 때 */
+    --gold:   #c9b48a;   /* 샴페인 골드 (메인 포인트) */
+    --gold-hi:#e2d1a8;   /* 밝은 골드 */
+    --line:   rgba(201, 180, 138, .28);  /* 골드 가는 선 */
+    --ivory:  #f3eee4;   /* 제목 글자 */
+    --text:   #cfc9bd;   /* 본문 글자 */
+    --muted:  #8f897e;   /* 연한 글자 */
   }
 
   * { box-sizing: border-box; }
-  html { background-color: var(--red-dark); -webkit-text-size-adjust: 100%; }
+  html { background: var(--bg); -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 
   body {
     margin: 0;
     min-height: 100dvh;
-    padding:
-      max(32px, env(safe-area-inset-top))
-      max(16px, env(safe-area-inset-right))
-      max(32px, env(safe-area-inset-bottom))
-      max(16px, env(safe-area-inset-left));
-    color: var(--blue);
+    background: var(--bg);
+    color: var(--text);
     font-family: "Noto Sans KR", "Apple SD Gothic Neo", system-ui, sans-serif;
+    font-weight: 400;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    /* 한국어를 글자 단위가 아니라 단어(띄어쓰기) 단위로 줄바꿈해요.
+       "들어 / 가요"처럼 단어 중간에서 끊기지 않게 */
+    word-break: keep-all;
+    overflow-wrap: break-word;   /* 아주 긴 영어 단어만 어쩔 수 없을 때 끊어요 */
+    text-wrap: pretty;           /* 마지막 줄에 한 단어만 남지 않게 (지원하는 브라우저에서) */
   }
+  /* 짧은 제목·소개는 줄 길이를 고르게 */
+  h1, h2, h3, .section-head p, .quote { text-wrap: balance; }
 
-  /* 배경: 붉은 호텔 로비 벽 + 금색 마름모 무늬 + 위에서 내려오는 조명 */
-  body::before {
-    content: "";
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible { outline: 1px solid var(--gold-hi); outline-offset: 4px; }
+
+  /* 불꽃놀이 배경: 화면 전체에 고정해 두고, 페이지 내용은 그 위에 올려요 */
+  #fireworks {
     position: fixed;
     inset: 0;
-    z-index: -1;
-    background:
-      radial-gradient(ellipse at 50% 0%, rgba(192, 163, 83, .40), transparent 60%),
-      repeating-linear-gradient(45deg, rgba(192, 163, 83, .12) 0 1px, transparent 1px 22px),
-      repeating-linear-gradient(-45deg, rgba(192, 163, 83, .12) 0 1px, transparent 1px 22px),
-      linear-gradient(var(--red), var(--red-dark));
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  main, footer { position: relative; z-index: 1; }
+
+  /* 페이지 폭과 좌우 여백 (아이폰 노치 영역도 피해요) */
+  .wrap {
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
   }
 
-  /* 페이지 전체 폭 */
-  .wrap { max-width: 960px; margin: 0 auto; }
+  /* 영문 소제목: 글자 사이를 넓게 벌린 대문자 */
+  .eyebrow {
+    margin: 0;
+    font-family: "Cormorant Garamond", serif;
+    font-size: .85rem;
+    font-weight: 500;
+    letter-spacing: .38em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
 
-  /* ===== 2. 프로필 박스 (나) ===== */
-  .profile {
-    background: var(--card);
-    border: 3px solid var(--gold);
-    border-radius: 14px;
-    padding: 28px 24px;
+  /* 가운데 골드 장식선: ──── ◆ ──── */
+  .ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 22px auto;
+    color: var(--gold);
+  }
+  .ornament::before, .ornament::after {
+    content: "";
+    width: 56px;
+    height: 1px;
+    background: var(--line);
+  }
+  .ornament i {
+    width: 6px;
+    height: 6px;
+    border: 1px solid var(--gold);
+    transform: rotate(45deg);
+  }
+
+  /* ===== 2. 맨 위 머리띠 ===== */
+  .topbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    padding-top: max(20px, env(safe-area-inset-top));
+  }
+  .topbar .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  /* 필기체 K 로고 */
+  .monogram {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    font-family: "Pinyon Script", "Great Vibes", cursive;
+    font-size: 1.7rem;
+    line-height: 1;
+    padding: 4px 2px 0 0;   /* 필기체가 가운데 오도록 살짝 보정 */
+    color: var(--gold-hi);
+    text-decoration: none;
+  }
+  .topbar nav { display: flex; gap: 26px; }
+  .topbar nav a {
+    font-family: "Cormorant Garamond", serif;
+    font-size: .9rem;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .topbar nav a:hover { color: var(--gold-hi); }
+
+  /* ===== 3. 첫 화면 (나 = 1일차 프로필) ===== */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding: 120px 0 150px;   /* 아래 SCROLL 표시와 겹치지 않게 넉넉히 */
+    overflow: hidden;
     text-align: center;
-    box-shadow: 0 0 0 5px var(--red), 0 0 0 7px var(--gold), 0 18px 40px rgba(0, 0, 0, .45);
+    /* 위에서 내려오는 은은한 샹들리에 빛 (나머지는 투명해서 뒤 불꽃이 보여요) */
+    background: radial-gradient(ellipse 60% 45% at 50% 0%, rgba(201, 180, 138, .16), transparent 70%);
   }
 
-  .stars { margin: 0 0 6px; color: var(--gold); letter-spacing: 4px; font-size: .9rem; }
+  /* 뒤에 깔린 야경 스카이라인 (그림 없이 코드로 그렸어요) */
+  .skyline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 34%;
+    pointer-events: none;
+    opacity: .9;
+  }
+  /* 오른쪽에 우뚝 선 타워 */
+  .tower {
+    position: absolute;
+    right: 9%;
+    bottom: 0;
+    width: 70px;
+    height: 78%;
+    pointer-events: none;
+  }
+  @media (max-width: 760px) {
+    .tower { right: 4%; width: 44px; height: 60%; opacity: .55; }
+  }
+
+  .hero-inner { position: relative; z-index: 1; max-width: 640px; }
+
+  .stars { margin: 0 0 18px; color: var(--gold); font-size: .8rem; letter-spacing: .6em; padding-left: .6em; }
 
   .name {
+    margin: 18px 0 6px;
+    font-family: "Noto Serif KR", serif;
+    font-weight: 600;
+    font-size: clamp(2.8rem, 9vw, 4.6rem);
+    line-height: 1.15;
+    letter-spacing: .12em;
+    padding-left: .12em;   /* 글자 간격 때문에 오른쪽으로 쏠리는 것 보정 */
+    color: var(--ivory);
+  }
+  .name-en {
     margin: 0;
-    color: var(--red);
-    font-weight: 900;
-    font-size: clamp(2rem, 7vw, 2.6rem);
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--gold-hi);
+    letter-spacing: .06em;
   }
-  .major { margin: 4px 0 16px; color: var(--muted); }
+  .major { margin: 6px 0 0; font-size: .95rem; color: var(--muted); letter-spacing: .08em; }
 
-  /* 한 줄 소개: 말풍선 */
+  /* 한 줄 소개 */
   .quote {
-    display: inline-block;
-    margin: 0 0 18px;
-    padding: 8px 18px;
-    background: #fff;
-    border: 2px solid var(--red);
-    border-radius: 18px;
-    font-weight: 700;
+    margin: 0;
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: clamp(1.5rem, 4.5vw, 2rem);
+    line-height: 1.4;
+    color: var(--ivory);
   }
 
-  /* 연락 수단 */
-  .contact { margin: 0 0 22px; }
-  .contact a {
+  /* 버튼 */
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 34px;
+  }
+  .btn {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    min-height: 44px;
-    padding: 0 18px;
-    border-radius: 8px;
-    background: var(--gold);
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, .35);
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 26px;
+    border: 1px solid var(--gold);
+    font-family: "Cormorant Garamond", serif;
+    font-size: .95rem;
+    font-weight: 600;
+    letter-spacing: .28em;
+    text-transform: uppercase;
     text-decoration: none;
-    font-weight: 700;
-    word-break: break-all;
+    transition: background .3s, color .3s;
   }
-  .contact a:hover, .contact a:active { background: var(--blue); }
+  .btn-solid { background: var(--gold); color: #141414; }
+  .btn-solid:hover { background: var(--gold-hi); }
+  .mail-text {
+    display: block;
+    margin-top: 12px;
+    font-size: .85rem;
+    color: var(--muted);
+    letter-spacing: .04em;
+  }
 
-  /* ===== 3. 경험치 막대 ===== */
-  .xp { max-width: 420px; margin: 0 auto; text-align: left; }
+  /* ===== 4. 경험치 막대 = 엘리베이터 층수 표시 ===== */
+  .xp { max-width: 440px; margin: 40px auto 0; }
   .xp-label {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 6px;
-    font-size: .95rem;
-    font-weight: 700;
+    align-items: baseline;
+    margin-bottom: 10px;
+  }
+  .xp-label .eyebrow { font-size: .78rem; }
+  .xp-label b {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: var(--ivory);
+    letter-spacing: .06em;
   }
   .xp-bar {
-    height: 14px;
-    background: var(--soft);
-    border-radius: 99px;
-    overflow: hidden;
+    position: relative;
+    height: 2px;
+    background: rgba(201, 180, 138, .18);
   }
   .xp-bar i {
-    display: block;
-    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
     width: 0;   /* 처음엔 0 → 스크립트가 값을 넣으면 차올라요 */
-    background: linear-gradient(90deg, var(--gold), #e2c877);
-    border-radius: 99px;
-    transition: width 1s .2s ease-out;
+    background: linear-gradient(90deg, var(--gold), var(--gold-hi));
+    box-shadow: 0 0 12px rgba(226, 209, 168, .55);
+    transition: width 1.2s .2s cubic-bezier(.2, .7, .2, 1);
+  }
+  /* 1층~10층 눈금 */
+  .xp-floors {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding: 0;
+    list-style: none;
+    font-family: "Cormorant Garamond", serif;
+    font-size: .8rem;
+    color: var(--muted);
+  }
+  .xp-floors li.on { color: var(--gold-hi); }
+
+  .scroll-hint {
+    position: absolute;
+    left: 50%;
+    bottom: 26px;
+    z-index: 1;
+    transform: translateX(-50%);
+    font-family: "Cormorant Garamond", serif;
+    font-size: .75rem;
+    letter-spacing: .4em;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .scroll-hint::after {
+    content: "";
+    display: block;
+    width: 1px;
+    height: 34px;
+    margin: 10px auto 0;
+    background: linear-gradient(var(--gold), transparent);
   }
 
-  /* ===== 4. 퀘스트 로그 ===== */
-  .log { margin-top: 40px; }
-  .log-head { margin: 0 4px 16px; color: #fff; }
-  .log-head h2 {
-    margin: 0;
-    font-size: 1.4rem;
-    font-weight: 900;
-    letter-spacing: .04em;
+  /* ===== 5. 퀘스트 로그 = 객실(Suites) 소개 ===== */
+  .suites { position: relative; padding: 110px 0 120px; border-top: 1px solid var(--line); }
+  .suites > .wrap { position: relative; z-index: 1; }   /* 글자·카드는 불꽃보다 위에 */
+
+
+  .section-head { text-align: center; margin-bottom: 56px; }
+  .section-head h2 {
+    margin: 14px 0 0;
+    font-family: "Noto Serif KR", serif;
+    font-weight: 600;
+    font-size: clamp(1.7rem, 5vw, 2.3rem);
+    color: var(--ivory);
+    letter-spacing: .06em;
   }
-  .log-head h2 span { color: var(--gold); }
-  .log-head p { margin: 4px 0 0; font-size: .92rem; opacity: .85; }
+  .section-head p { margin: 0 auto; max-width: 460px; color: var(--muted); font-size: .95rem; }
 
   .quests {
     list-style: none;
@@ -143,200 +341,404 @@
     padding: 0;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
+    gap: 24px;
   }
 
   /* 카드 한 장 */
   .quest {
-    display: grid;
-    grid-template-columns: 64px minmax(0, 1fr);
-    gap: 16px;
-    align-items: start;
-    background: var(--card);
-    border: 3px solid var(--gold);
-    border-radius: 12px;
-    padding: 18px;
-    box-shadow: 0 0 0 4px var(--red), 0 10px 24px rgba(0, 0, 0, .35);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 34px 32px 30px;
+    background: rgba(21, 21, 26, .9);   /* 살짝 비쳐서 뒤 불꽃이 은은하게 보여요 */
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+    border: 1px solid var(--line);
+    transition: background .4s, border-color .4s, transform .4s;
+  }
+  /* 카드 안쪽에 한 겹 더 두른 가는 골드 테두리 */
+  .quest::before {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    border: 1px solid rgba(201, 180, 138, .1);
+    pointer-events: none;
+  }
+  .quest:not(.locked):hover {
+    background: var(--panel2);
+    border-color: var(--gold);
+    transform: translateY(-4px);
   }
 
-  /* 왼쪽 아이콘 칸 */
-  .quest-icon {
-    width: 64px;
-    height: 64px;
+  /* 결과물 화면 캡처 */
+  .shot {
+    position: relative;
+    margin: -10px -8px 26px;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: #1f1f25;
+  }
+  .shot img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;   /* 사이트 윗부분이 보이게 */
+    filter: brightness(.92);
+    transition: transform .8s ease, filter .6s;
+  }
+  .quest:hover .shot img { transform: scale(1.04); filter: brightness(1); }
+  /* 캡처 위 왼쪽 위에 동그란 객실 번호 */
+  .shot .shot-no {
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    z-index: 1;
     display: grid;
     place-items: center;
-    border-radius: 10px;
-    background: var(--red);
-    border: 2px solid var(--gold);
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: rgba(13, 13, 15, .82);
+    border: 1px solid var(--gold);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.15rem;
+    color: var(--gold-hi);
   }
-  .quest-icon svg { width: 34px; height: 34px; }
 
-  .quest-meta {
+  .quest-top {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin: 0 0 4px;
-    font-size: .85rem;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  /* 객실 번호: SUITE 01 */
+  .room-no {
+    font-family: "Cormorant Garamond", serif;
+    font-size: .82rem;
+    font-weight: 600;
+    letter-spacing: .32em;
+    color: var(--gold);
+  }
+  .room-no small {
+    margin-left: 10px;
+    font-size: .78rem;
+    font-weight: 400;
+    letter-spacing: .12em;
     color: var(--muted);
-    font-weight: 700;
   }
-  .badge {
-    padding: 2px 8px;
-    border-radius: 99px;
-    background: var(--blue);
-    color: #fff;
-    font-size: .75rem;
+  /* 한 번 들어가 본 객실: 객실 번호 옆에 VISITED 표시 */
+  .visited-mark {
+    margin-left: 10px;
+    font-size: .7rem;
+    letter-spacing: .2em;
+    color: var(--gold-hi);
+    opacity: 0;
+    transition: opacity .4s;
   }
+  .quest.visited .visited-mark { opacity: 1; }
+
+  .quest-icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+  }
+  .quest-icon svg { width: 22px; height: 22px; }
 
   .quest h3 {
-    margin: 0 0 6px;
-    color: var(--red);
-    font-size: 1.15rem;
-    font-weight: 900;
-    line-height: 1.35;
-  }
-  .quest-desc {
     margin: 0 0 12px;
-    font-size: .92rem;
-    line-height: 1.6;
-    color: #2b3550;
+    font-family: "Noto Serif KR", serif;
+    font-weight: 600;
+    font-size: 1.3rem;
+    line-height: 1.45;
+    color: var(--ivory);
   }
+  .quest-desc { margin: 0 0 20px; font-size: .93rem; font-weight: 300; line-height: 1.8; }
 
   /* 해시태그 */
   .tags {
     list-style: none;
-    margin: 0 0 14px;
+    margin: 0 0 26px;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 6px 14px;
   }
   .tags li {
-    padding: 3px 9px;
-    border-radius: 6px;
-    background: var(--soft);
-    color: var(--blue);
-    font-size: .8rem;
-    font-weight: 700;
+    font-family: "Cormorant Garamond", "Noto Sans KR", serif;
+    font-size: .92rem;
+    color: var(--gold);
+    letter-spacing: .03em;
   }
 
-  /* 들어가기 버튼 */
+  /* 카드 아래: 들어가기 + 주소 */
+  .quest-foot {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
   .enter {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    min-height: 42px;
-    padding: 0 18px;
-    border-radius: 8px;
-    background: var(--red);
-    color: #fff;
+    gap: 10px;
+    min-height: 44px;
+    font-family: "Cormorant Garamond", serif;
+    font-size: .92rem;
+    font-weight: 600;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    color: var(--gold-hi);
     text-decoration: none;
-    font-weight: 700;
   }
-  .enter:hover, .enter:active { background: var(--blue); }
-  .quest-url {
-    display: block;
-    margin-top: 8px;
-    font-size: .78rem;
-    color: var(--muted);
-    word-break: break-all;
-  }
+  /* 들어가기 링크를 카드 전체로 넓혀서, 카드 어디를 눌러도 들어가져요 */
+  .enter::after { content: ""; position: absolute; inset: 0; z-index: 2; }
+  .quest:not(.locked) { cursor: pointer; }
+  .enter span { transition: transform .3s; }
+  .quest:hover .enter span { transform: translateX(6px); }
+  .quest-url { font-size: .76rem; color: var(--muted); word-break: break-all; }
 
-  /* 아직 열리지 않은 퀘스트 (6~10일차) */
+  /* 아직 열리지 않은 객실 (6~10일차) */
   .quest.locked {
-    background: rgba(250, 246, 238, .12);
-    border: 2px dashed rgba(192, 163, 83, .7);
-    box-shadow: none;
-    color: #fff;
-    align-items: center;
+    background: transparent;
+    border-style: dashed;
+    border-color: rgba(201, 180, 138, .22);
+    padding: 26px 32px;
+    justify-content: center;
   }
-  .quest.locked .quest-icon { background: transparent; border-style: dashed; }
-  .quest.locked h3 { margin: 0; color: #fff; opacity: .85; }
-  .quest.locked .quest-meta { color: var(--gold); }
+  .quest.locked::before { display: none; }
+  .quest.locked .quest-top { margin-bottom: 8px; }
+  .quest.locked h3 { margin: 0; font-size: 1rem; font-weight: 400; color: var(--muted); }
 
-  /* 휴대폰에서는 카드 한 줄에 하나 */
-  @media (max-width: 720px) {
+  /* ===== 6. 맨 아래 ===== */
+  footer {
+    padding: 56px 0 calc(48px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    text-align: center;
+    font-size: .82rem;
+    color: var(--muted);
+  }
+  footer .monogram { margin: 0 auto 18px; }
+  footer p { margin: 4px 0; }
+  footer a { color: var(--gold); text-decoration: none; }
+
+  /* ===== 7. 들어올 때 살짝 떠오르는 효과 ===== */
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity 1s ease, transform 1s ease; }
+  .reveal.show { opacity: 1; transform: none; }
+
+  /* ===== 8. 휴대폰 화면 ===== */
+  @media (max-width: 760px) {
     .quests { grid-template-columns: 1fr; }
+    .topbar nav a { letter-spacing: .2em; font-size: .8rem; }
+    .quest { padding: 28px 22px 24px; }
+    .quest.locked { padding: 22px; }
+    .shot { margin: -6px -4px 22px; }
+    .suites { padding: 80px 0 90px; }
   }
   @media (max-width: 380px) {
-    .quest { grid-template-columns: 1fr; }
+    .btn { padding: 0 18px; letter-spacing: .2em; }
   }
 
-  a:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
-
+  /* 움직임을 줄이도록 설정한 사람에게는 애니메이션을 끄고 보여 줘요 */
   @media (prefers-reduced-motion: reduce) {
-    * { transition-duration: .01s !important; transition-delay: 0s !important; }
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition-duration: .01s !important; transition-delay: 0s !important; }
+    .reveal { opacity: 1; transform: none; }
   }
 </style>
 </head>
 
 <body>
-  <div class="wrap">
+
+  <!-- 페이지 전체 배경에서 양쪽으로 터지는 불꽃놀이 (스크립트가 그려요) -->
+  <canvas id="fireworks" aria-hidden="true"></canvas>
+
+  <!-- ========== 맨 위 머리띠 ========== -->
+  <header class="topbar">
+    <div class="wrap">
+      <a class="monogram" href="#top" aria-label="맨 위로">K</a>
+      <nav aria-label="바로가기">
+        <a href="#suites">Suites</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
 
     <!-- ========== 1. 나 (1일차 프로필) ========== -->
-    <header class="profile">
-      <p class="stars" aria-hidden="true">★★★★★</p>
-      <h1 class="name">권혁태</h1>
-      <p class="major">경희대학교 호텔경영학과</p>
-      <p class="quote">“KnocK, knock. Housekeeping!”</p>
+    <section class="hero" aria-labelledby="myName">
 
-      <p class="contact">
-        <a href="mailto:gurxo0315@naver.com">✉ gurxo0315@naver.com</a>
-      </p>
+      <!-- 배경: 밤의 도시 스카이라인 -->
+      <svg class="skyline" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#0d0d0f" stop-opacity="0"/>
+            <stop offset="1" stop-color="#0d0d0f" stop-opacity="1"/>
+          </linearGradient>
+        </defs>
 
-      <!-- 경험치 막대: 아래 quests 목록의 개수로 자동 계산돼요 -->
-      <div class="xp">
-        <div class="xp-label">
-          <span>경험치</span>
-          <span id="xpText">0 / 10일차</span>
+        <!-- 멀리 있는 낮은 빌딩들 -->
+        <g fill="#16161b">
+          <rect x="0"    y="300" width="70"  height="100"/>
+          <rect x="80"   y="270" width="50"  height="130"/>
+          <rect x="140"  y="310" width="90"  height="90"/>
+          <rect x="240"  y="250" width="44"  height="150"/>
+          <rect x="295"  y="290" width="80"  height="110"/>
+          <rect x="390"  y="230" width="56"  height="170"/>
+          <rect x="455"  y="285" width="70"  height="115"/>
+          <rect x="680"  y="280" width="66"  height="120"/>
+          <rect x="755"  y="240" width="50"  height="160"/>
+          <rect x="815"  y="300" width="90"  height="100"/>
+          <rect x="915"  y="260" width="46"  height="140"/>
+          <rect x="970"  y="295" width="80"  height="105"/>
+          <rect x="1060" y="250" width="60"  height="150"/>
+          <rect x="1130" y="300" width="70"  height="100"/>
+        </g>
+
+        <!-- 빌딩 창문 불빛 (작은 점들) -->
+        <g fill="#c9b48a" opacity=".45">
+          <rect x="94"  y="290" width="3" height="3"/><rect x="108" y="310" width="3" height="3"/>
+          <rect x="252" y="270" width="3" height="3"/><rect x="266" y="300" width="3" height="3"/>
+          <rect x="404" y="250" width="3" height="3"/><rect x="420" y="280" width="3" height="3"/>
+          <rect x="430" y="320" width="3" height="3"/><rect x="694" y="300" width="3" height="3"/>
+          <rect x="768" y="262" width="3" height="3"/><rect x="782" y="300" width="3" height="3"/>
+          <rect x="928" y="280" width="3" height="3"/><rect x="1074" y="272" width="3" height="3"/>
+          <rect x="1090" y="310" width="3" height="3"/>
+        </g>
+
+        <!-- 아래쪽은 배경색으로 자연스럽게 사라지게 -->
+        <rect x="0" y="250" width="1200" height="150" fill="url(#fade)"/>
+      </svg>
+
+      <!-- 오른쪽 초고층 타워: 위로 갈수록 가늘어지는 모양. 글자와 겹치지 않게 따로 그렸어요 -->
+      <svg class="tower" viewBox="0 0 80 400" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+        <defs>
+          <linearGradient id="towerGlow" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#e2d1a8" stop-opacity=".5"/>
+            <stop offset="1" stop-color="#c9b48a" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="towerFade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset=".7" stop-color="#0d0d0f" stop-opacity="0"/>
+            <stop offset="1" stop-color="#0d0d0f" stop-opacity="1"/>
+          </linearGradient>
+        </defs>
+        <path d="M40 12 L2 400 L78 400 Z" fill="url(#towerGlow)" opacity=".3"/>
+        <path d="M40 12 L10 400 L70 400 Z" fill="#14141a" stroke="#c9b48a" stroke-width=".8" stroke-opacity=".75"/>
+        <path d="M40 12 V400" stroke="#c9b48a" stroke-width=".5" stroke-opacity=".45"/>
+        <!-- 꼭대기 불빛 -->
+        <circle cx="40" cy="12" r="2" fill="#e2d1a8"/>
+        <circle cx="40" cy="12" r="8" fill="#e2d1a8" opacity=".2"/>
+        <!-- 층마다 켜진 불빛 -->
+        <g stroke="#e2d1a8" stroke-width=".8" opacity=".55">
+          <path d="M35 70 H45"/><path d="M32 120 H48"/><path d="M29 170 H51"/>
+          <path d="M26 220 H54"/><path d="M23 270 H57"/><path d="M20 320 H60"/>
+        </g>
+        <rect x="0" y="0" width="80" height="400" fill="url(#towerFade)"/>
+      </svg>
+
+      <div class="hero-inner wrap">
+        <p class="stars reveal" aria-label="5성급">★★★★★</p>
+        <p class="eyebrow reveal">Welcome to my portfolio</p>
+
+        <h1 class="name reveal" id="myName">권혁태</h1>
+        <p class="name-en reveal">Kwon Hyuk-Tae</p>
+        <p class="major reveal">경희대학교 호텔경영학과</p>
+
+        <div class="ornament reveal" aria-hidden="true"><i></i></div>
+
+        <p class="quote reveal">“KnocK, knock. Housekeeping!”</p>
+
+        <div class="actions reveal">
+          <a class="btn btn-solid" href="#suites">View Suites</a>
         </div>
-        <div class="xp-bar" role="progressbar" aria-label="경험치" aria-valuemin="0" aria-valuemax="10" id="xpBar">
-          <i id="xpFill"></i>
+        <span class="mail-text reveal">gurxo0315@naver.com</span>
+
+        <!-- 경험치 막대: 객실 카드에 들어갈 때마다 한 칸씩 차올라요 -->
+        <div class="xp reveal">
+          <div class="xp-label">
+            <span class="eyebrow">Experience</span>
+            <b id="xpText">0 / 10 (0%)</b>
+          </div>
+          <div class="xp-bar" role="progressbar" aria-label="경험치" aria-valuemin="0" aria-valuemax="10" id="xpBar">
+            <i id="xpFill"></i>
+          </div>
+          <ol class="xp-floors" id="xpFloors" aria-hidden="true"></ol>
         </div>
       </div>
-    </header>
+
+      <a class="scroll-hint" href="#suites" aria-label="퀘스트 로그로 내려가기">SCROLL</a>
+    </section>
 
     <!-- ========== 2. 퀘스트 로그 ========== -->
     <!-- 카드는 아래 quests 목록을 보고 스크립트가 자동으로 만들어요 -->
-    <section class="log" aria-labelledby="logTitle">
-      <div class="log-head">
-        <h2 id="logTitle"><span>QUEST</span> LOG</h2>
-        <p>10일 과정에서 깬 퀘스트예요. 카드를 누르면 실제 결과물로 이동해요.</p>
+    <section class="suites" id="suites" aria-labelledby="logTitle">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <p class="eyebrow">Quest Log</p>
+          <h2 id="logTitle">The Suites</h2>
+          <div class="ornament" aria-hidden="true"><i></i></div>
+          <p>10일 동안 하루에 한 객실씩 완성해요. 카드를 누르면 실제 결과물로 들어가요.</p>
+        </div>
+        <ul class="quests" id="questList"></ul>
       </div>
-      <ul class="quests" id="questList"></ul>
     </section>
 
-  </div>
+  </main>
+
+  <!-- ========== 맨 아래 ========== -->
+  <footer>
+    <div class="wrap">
+      <span class="monogram" aria-hidden="true">K</span>
+      <p>권혁태 · 경희대학교 호텔경영학과</p>
+      <p><a href="mailto:gurxo0315@naver.com">gurxo0315@naver.com</a></p>
+      <p>© 2026 Portfolio Hub</p>
+    </div>
+  </footer>
 
   <script>
     // ===== 퀘스트 목록 =====
     // 결과물이 하나 생길 때마다 여기에 한 줄씩 추가하면 돼요.
-    // 경험치 막대는 이 목록의 개수를 세서 자동으로 차올라요.
     // link: "" 안에 결과물 주소를 넣으면 돼요.
+    // image: images 폴더에 넣은 결과물 화면 캡처 (없으면 사진 칸 없이 나와요)
     const quests = [
       {
         day: 1,
-        name: "캐릭터 선택창 프로필",
+        image: "images/day1.jpg",
+        name: "내 프로필",
         desc: "Select를 누르면 호텔 로비에 호텔리어 캐릭터가 등장하고, 능력치 막대가 차오르는 자기소개 카드예요. Mail 버튼으로 메일 주소도 복사할 수 있어요.",
         link: "https://fastidious-mousse-2dd9a7.netlify.app",
-        learned: "#HTML #CSS #JavaScript #SVG #CSS애니메이션 #클립보드복사"
+        learned: "#HTML #CSS #JavaScript #SVG #CSS애니메이션"
       },
       {
         day: 2,
+        image: "images/day2.jpg",
         name: "시험 스터디 플래너",
         desc: "시험 범위 PDF를 넣으면 Claude가 과목별 개념 체크리스트로 정리해 줘요. 이해도가 낮은 약한 개념을 모아 보고, 공부 타이머로 남은 시간도 챙겨요.",
         link: "https://wondrous-sunflower-fcfad8.netlify.app",
-        learned: "#JavaScript #Claude #PDF.js #localStorage #공부타이머"
+        learned: "#JavaScript #Claude #PDF.js #localStorage"
       },
       {
         day: 3,
+        image: "images/day3.jpg",
         name: "한국시리즈 단체응원 랜딩페이지",
         desc: "한양대 학우들과 치킨집을 빌려 한국시리즈를 함께 보는 행사 홍보 페이지예요. 참여 인원을 고르면 입금할 금액이 자동으로 계산되고 바로 신청할 수 있어요.",
         link: "https://effortless-daffodil-8c91a8.netlify.app",
-        learned: "#HTML #CSS #JavaScript #NanoBanana #신청폼 #fetch"
+        learned: "#HTML #CSS #JavaScript #NanoBanana #fetch"
       },
       {
         day: 4,
+        image: "images/day4.jpg",
         name: "금융·경제 아침 브리핑",
         desc: "경제·금융·AI 키워드 뉴스를 RSS로 모아 Gemini가 기사마다 세 줄로 요약하고 원문 링크를 붙여요. 매일 아침 GitHub Actions가 알아서 새 브리핑을 만들어 줘요.",
         link: "https://velvety-kangaroo-bc36a4.netlify.app",
@@ -344,38 +746,28 @@
       },
       {
         day: 5,
+        image: "images/day5.jpg",
         name: "뉴스 브리핑 히스토리 대시보드",
         desc: "4일차 브리핑에 쌓인 기사를 키워드·언론사·날짜별 그래프와 숫자 카드로 보여 줘요. Gemini가 시장 트렌드 총평도 세 줄로 정리해요.",
         link: "https://storied-panda-824b6b.netlify.app",
-        learned: "#Chart.js #JavaScript #GeminiAPI #데이터시각화 #JSON"
+        learned: "#Chart.js #JavaScript #GeminiAPI #JSON"
       },
     ];
 
     const GOAL = 10;   // 목표 일차
 
-    // ===== 경험치 막대 채우기 =====
-    const done = quests.length;
-    const percent = Math.min(100, Math.round(done / GOAL * 100));
-
-    document.getElementById("xpText").textContent = done + " / " + GOAL + "일차 (" + percent + "%)";
-    document.getElementById("xpBar").setAttribute("aria-valuenow", done);
-
-    // ===== 퀘스트 카드 아이콘 (일차 번호별, 그림 대신 코드로 그렸어요) =====
+    // ===== 카드 아이콘 (일차 번호별, 골드 선으로 그렸어요) =====
+    const S = 'viewBox="0 0 24 24" fill="none" stroke="#c9b48a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"';
     const ICONS = {
-      // 1일차: 호텔 명찰
-      1: '<svg viewBox="0 0 24 24" fill="none" stroke="#c0a353" stroke-width="2" stroke-linecap="round"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="8.5" cy="12" r="2"/><path d="M13 10.5h5M13 13.5h3.5"/></svg>',
-      // 2일차: 공부 체크리스트
-      2: '<svg viewBox="0 0 24 24" fill="none" stroke="#c0a353" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="m8 9 1.5 1.5L12 8M8 15l1.5 1.5L12 14M14 9.5h2M14 15.5h2"/></svg>',
-      // 3일차: 입장 티켓
-      3: '<svg viewBox="0 0 24 24" fill="none" stroke="#c0a353" stroke-width="2" stroke-linejoin="round"><path d="M3 8a2 2 0 0 0 0 4v4h18v-4a2 2 0 0 1 0-4V4H3z" transform="translate(0 2)"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg>',
-      // 4일차: 신문
-      4: '<svg viewBox="0 0 24 24" fill="none" stroke="#c0a353" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h4M7 16h4"/><rect x="13" y="11" width="4" height="5"/></svg>',
-      // 5일차: 막대 그래프
-      5: '<svg viewBox="0 0 24 24" fill="none" stroke="#c0a353" stroke-width="2" stroke-linecap="round"><path d="M4 20h16"/><rect x="6" y="11" width="3" height="9"/><rect x="11" y="6" width="3" height="14"/><rect x="16" y="14" width="3" height="6"/></svg>'
+      1: '<svg ' + S + '><rect x="3" y="6" width="18" height="12" rx="1.5"/><circle cx="8.5" cy="12" r="2"/><path d="M13 10.5h5M13 13.5h3.5"/></svg>',           // 명찰
+      2: '<svg ' + S + '><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="m8 9 1.5 1.5L12 8M8 15l1.5 1.5L12 14M14 9.5h2M14 15.5h2"/></svg>',    // 체크리스트
+      3: '<svg ' + S + '><path d="M3 9a2 2 0 0 0 0 4v5h18v-5a2 2 0 0 1 0-4V6H3z"/><path d="M14 6v12" stroke-dasharray="1.5 2"/></svg>',                     // 입장 티켓
+      4: '<svg ' + S + '><rect x="3" y="4" width="18" height="16" rx="1.5"/><path d="M7 8h10M7 12h4M7 16h4"/><rect x="13" y="11" width="4" height="5"/></svg>', // 신문
+      5: '<svg ' + S + '><path d="M4 20h16"/><rect x="6" y="11" width="3" height="9"/><rect x="11" y="6" width="3" height="14"/><rect x="16" y="14" width="3" height="6"/></svg>' // 그래프
     };
-    // 아이콘이 없는 일차에 쓰는 기본 아이콘: 별
-    const DEFAULT_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="#c0a353" stroke-width="2" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>';
-    const LOCK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="#c0a353" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+    // 아이콘을 정하지 않은 일차에 쓰는 기본 아이콘: 호텔 열쇠
+    const DEFAULT_ICON = '<svg ' + S + '><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M21 12v2"/></svg>';
+    const LOCK_ICON = '<svg ' + S + '><rect x="5" y="11" width="14" height="10" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 
     // 글자 안의 < > 같은 기호가 HTML로 해석되지 않게 바꿔 주는 함수
     function esc(text) {
@@ -383,54 +775,249 @@
         return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
       });
     }
+    // 1 → "01" 처럼 두 자리로
+    function two(n) { return (n < 10 ? "0" : "") + n; }
 
-    // ===== 퀘스트 카드 그리기 =====
-    const list = document.getElementById("questList");
+    // ===== 퀘스트 카드(객실) 그리기 =====
     let html = "";
 
     quests.forEach(function (q) {
-      // "#HTML #CSS" → ["#HTML", "#CSS"] 로 나눠서 태그 칩으로 만들어요
+      // "#HTML #CSS" → 태그 하나하나로 나눠요
       const tags = q.learned.split(/\s+/).filter(Boolean)
         .map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("");
       const shortUrl = q.link.replace(/^https?:\/\//, "");
-      const button = q.link
-        ? '<a class="enter" href="' + esc(q.link) + '" target="_blank" rel="noopener">들어가기 ▶</a>' +
-          '<span class="quest-url">' + esc(shortUrl) + '</span>'
+      // 결과물 화면 캡처 (있을 때만)
+      const shot = q.image
+        ? '<div class="shot">' +
+            '<img src="' + esc(q.image) + '" alt="' + esc(q.name) + ' 첫 화면" loading="lazy" width="1280" height="800">' +
+            '<span class="shot-no" aria-hidden="true">' + two(q.day) + '</span>' +
+          '</div>'
+        : '';
+      const foot = q.link
+        ? '<div class="quest-foot">' +
+            '<a class="enter" href="' + esc(q.link) + '" target="_blank" rel="noopener">들어가기 <span aria-hidden="true">→</span></a>' +
+            '<span class="quest-url">' + esc(shortUrl) + '</span>' +
+          '</div>'
         : '';
 
       html +=
-        '<li class="quest">' +
-          '<div class="quest-icon" aria-hidden="true">' + (ICONS[q.day] || DEFAULT_ICON) + '</div>' +
-          '<div>' +
-            '<p class="quest-meta">DAY ' + q.day + ' QUEST <span class="badge">클리어</span></p>' +
-            '<h3>' + esc(q.name) + '</h3>' +
-            '<p class="quest-desc">' + esc(q.desc) + '</p>' +
-            '<ul class="tags" aria-label="쓰인 기능">' + tags + '</ul>' +
-            button +
+        '<li class="quest reveal" data-day="' + q.day + '">' +
+          shot +
+          '<div class="quest-top">' +
+            '<span class="room-no">SUITE ' + two(q.day) + '<small>DAY ' + q.day + '</small>' +
+              '<span class="visited-mark">VISITED</span></span>' +
+            '<span class="quest-icon" aria-hidden="true">' + (ICONS[q.day] || DEFAULT_ICON) + '</span>' +
           '</div>' +
+          '<h3>' + esc(q.name) + '</h3>' +
+          '<p class="quest-desc">' + esc(q.desc) + '</p>' +
+          '<ul class="tags" aria-label="쓰인 기능">' + tags + '</ul>' +
+          foot +
         '</li>';
     });
 
-    // 아직 안 연 일차는 잠긴 카드로 보여 줘요 (목표 10일차까지)
+    // 아직 안 연 일차는 준비 중인 객실로 보여 줘요 (목표 10일차까지)
     for (let d = quests.length + 1; d <= GOAL; d++) {
       html +=
-        '<li class="quest locked">' +
-          '<div class="quest-icon" aria-hidden="true">' + LOCK_ICON + '</div>' +
-          '<div>' +
-            '<p class="quest-meta">DAY ' + d + ' QUEST</p>' +
-            '<h3>아직 열리지 않은 퀘스트</h3>' +
+        '<li class="quest locked reveal">' +
+          '<div class="quest-top">' +
+            '<span class="room-no">SUITE ' + two(d) + '<small>DAY ' + d + '</small></span>' +
+            '<span class="quest-icon" aria-hidden="true">' + LOCK_ICON + '</span>' +
           '</div>' +
+          '<h3>준비 중인 객실이에요</h3>' +
         '</li>';
     }
 
-    list.innerHTML = html;
+    document.getElementById("questList").innerHTML = html;
 
-    // 화면이 그려진 다음에 너비를 넣어야 차오르는 애니메이션이 보여요
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        document.getElementById("xpFill").style.width = percent + "%";
+    // ===== 경험치: 객실(카드)에 들어갈 때마다 한 칸씩 차올라요 =====
+    // 들어가 본 객실 번호를 이 브라우저에 기억해 둬요 (새로고침해도 유지)
+    const SAVE_KEY = "hub-visited-suites";
+    let visited = [];
+    try { visited = JSON.parse(localStorage.getItem(SAVE_KEY)) || []; } catch (e) { visited = []; }
+
+    function updateXP() {
+      const count = Math.min(visited.length, GOAL);
+      const percent = Math.round(count / GOAL * 100);
+
+      document.getElementById("xpText").textContent = count + " / " + GOAL + " (" + percent + "%)";
+      document.getElementById("xpBar").setAttribute("aria-valuenow", count);
+      document.getElementById("xpFill").style.width = percent + "%";
+
+      // 막대 아래 1층~10층 눈금 (채워진 층은 골드로)
+      let floors = "";
+      for (let f = 1; f <= GOAL; f++) {
+        floors += '<li' + (f <= count ? ' class="on"' : '') + '>' + f + '</li>';
+      }
+      document.getElementById("xpFloors").innerHTML = floors;
+
+      // 들어가 본 카드에는 VISITED 표시
+      document.querySelectorAll(".quest[data-day]").forEach(function (card) {
+        card.classList.toggle("visited", visited.indexOf(Number(card.dataset.day)) !== -1);
       });
+    }
+
+    // 카드를 누르면 (처음 들어가는 객실일 때만) 경험치 한 칸 추가
+    document.getElementById("questList").addEventListener("click", function (e) {
+      const card = e.target.closest(".quest[data-day]");
+      if (!card) return;
+      const day = Number(card.dataset.day);
+      if (visited.indexOf(day) === -1) {
+        visited.push(day);
+        try { localStorage.setItem(SAVE_KEY, JSON.stringify(visited)); } catch (err) {}
+        updateXP();
+      }
     });
+
+    // 처음 열었을 때 경험치 표시
+    updateXP();
+
+    // ===== 화면에 보이면 살짝 떠오르게 =====
+    const items = document.querySelectorAll(".reveal");
+
+    // 첫 화면(프로필)은 기다리지 않고 바로 순서대로 나타나요
+    document.querySelectorAll(".hero .reveal").forEach(function (el, i) {
+      el.style.transitionDelay = i * 0.08 + "s";
+      requestAnimationFrame(function () { el.classList.add("show"); });
+    });
+
+    // 혹시 효과가 안 켜지는 브라우저에서도 3초 뒤엔 모두 보이게 하는 안전장치
+    setTimeout(function () {
+      items.forEach(function (el) { el.classList.add("show"); });
+    }, 3000);
+
+    // ===== 페이지 전체 배경 불꽃놀이 =====
+    // 왼쪽·오른쪽 아래에서 폭죽이 솟아올라 빨강·주황·노랑·초록·파랑으로 터져요.
+    (function () {
+      const canvas = document.getElementById("fireworks");
+      const ctx = canvas.getContext("2d");
+      const COLORS = ["#ff3b3b", "#ff8a1f", "#ffd23f", "#3ddc6b", "#3b8bff"];  // 빨강, 주황, 노랑, 초록, 파랑
+      const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      let W = 0, H = 0;
+      let rockets = [], sparks = [];
+      let running = false, lastLaunch = 0, nextGap = 0;   // nextGap 0 → 열자마자 첫 발
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = canvas.clientWidth;
+        H = canvas.clientHeight;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function rand(a, b) { return a + Math.random() * (b - a); }
+
+      // 폭죽 하나 쏘아 올리기
+      // 가운데 글자 영역(약 34~66%)을 피해서, 왼쪽·오른쪽 빈 공간 전체에서 터져요
+      function launch(left) {
+        const startX = left ? rand(W * .02, W * .3) : rand(W * .7, W * .98);
+        const targetX = left ? rand(W * .03, W * .33) : rand(W * .67, W * .97);
+        const targetY = rand(H * .08, H * .6);
+        rockets.push({
+          x: startX, y: H + 10,
+          vx: (targetX - startX) / 60, vy: -(H + 10 - targetY) / 60,
+          ty: targetY,
+          color: COLORS[Math.floor(Math.random() * COLORS.length)]
+        });
+      }
+
+      // 터지기: 불꽃 조각을 동그랗게 흩뿌려요
+      function explode(r) {
+        const n = Math.round(rand(46, 72));
+        // 화면이 넓을수록 더 크게 터져요
+        const power = rand(2.4, 3.8) * Math.min(1.4, Math.max(.75, W / 1200));
+        // 가끔은 두 가지 색이 섞인 불꽃
+        const second = Math.random() < .35 ? COLORS[Math.floor(Math.random() * COLORS.length)] : r.color;
+        for (let i = 0; i < n; i++) {
+          const a = (Math.PI * 2 * i) / n + rand(-.05, .05);
+          const s = power * rand(.6, 1.05);
+          sparks.push({
+            x: r.x, y: r.y, px: r.x, py: r.y,
+            vx: Math.cos(a) * s, vy: Math.sin(a) * s,
+            life: 1, decay: rand(.010, .018),
+            color: i % 3 === 0 ? second : r.color
+          });
+        }
+      }
+
+      function frame(t) {
+        if (!running) return;
+        ctx.clearRect(0, 0, W, H);
+        ctx.globalCompositeOperation = "lighter";   // 겹치면 더 밝게 빛나요
+
+        // 1.5~2.5초마다 한 번에 2발씩 (왼쪽 1발 + 오른쪽 1발) 쏘아 올려요
+        // 더 느리게 하려면 아래 두 숫자(밀리초)를 키우면 돼요
+        if (t - lastLaunch > nextGap) {
+          launch(true);
+          launch(false);
+          lastLaunch = t;
+          nextGap = rand(1500, 2500);
+        }
+
+        // 올라가는 폭죽 꼬리
+        rockets = rockets.filter(function (r) {
+          r.x += r.vx; r.y += r.vy;
+          ctx.strokeStyle = r.color;
+          ctx.globalAlpha = .8;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(r.x, r.y);
+          ctx.lineTo(r.x - r.vx * 4, r.y - r.vy * 4);
+          ctx.stroke();
+          if (r.y <= r.ty) { explode(r); return false; }
+          return true;
+        });
+
+        // 흩어지는 불꽃 조각
+        sparks = sparks.filter(function (s) {
+          s.px = s.x; s.py = s.y;
+          s.vx *= .985; s.vy = s.vy * .985 + .035;   // 공기 저항 + 중력
+          s.x += s.vx; s.y += s.vy;
+          s.life -= s.decay;
+          if (s.life <= 0) return false;
+          ctx.globalAlpha = s.life;
+          ctx.strokeStyle = s.color;
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          ctx.moveTo(s.px - s.vx * 2, s.py - s.vy * 2);
+          ctx.lineTo(s.x, s.y);
+          ctx.stroke();
+          return true;
+        });
+
+        ctx.globalAlpha = 1;
+        ctx.globalCompositeOperation = "source-over";
+        requestAnimationFrame(frame);
+      }
+
+      function start() { if (!running && !calm) { running = true; requestAnimationFrame(frame); } }
+      function stop() { running = false; }
+
+      resize();
+      window.addEventListener("resize", resize);
+
+      // 페이지를 여는 순간부터 계속 터져요
+      start();
+      // 다른 탭으로 가면 멈추고(배터리 절약), 돌아오면 다시
+      document.addEventListener("visibilitychange", function () {
+        document.hidden ? stop() : start();
+      });
+    })();
+
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            e.target.classList.add("show");
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      items.forEach(function (el) { io.observe(el); });
+    } else {
+      items.forEach(function (el) { el.classList.add("show"); });
+    }
   </script>
 </body>
 </html>
