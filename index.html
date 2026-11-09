@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<!-- 휴대폰 화면 크기에 맞춰 보이게 하는 필수 한 줄이에요 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#a40f16">
+<title>권혁태 | 포트폴리오 허브</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap">
+
+<style>
+  /* ===== 1. 색깔 모음: 1일차 프로필과 같은 경희대학교 색상 ===== */
+  :root {
+    --red:  #a40f16;      /* Kyung Hee Red  ← 메인 */
+    --blue: #0d326f;      /* Kyung Hee Blue */
+    --gold: #c0a353;      /* Kyung Hee Gold */
+    --red-dark: #4f080c;
+    --card: #faf6ee;      /* 호텔 린넨 같은 따뜻한 흰색 */
+    --soft: #e9e1cf;      /* 막대 바탕 */
+    --muted: #5b6785;     /* 연한 글자색 */
+  }
+
+  * { box-sizing: border-box; }
+  html { background-color: var(--red-dark); -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    padding:
+      max(32px, env(safe-area-inset-top))
+      max(16px, env(safe-area-inset-right))
+      max(32px, env(safe-area-inset-bottom))
+      max(16px, env(safe-area-inset-left));
+    color: var(--blue);
+    font-family: "Noto Sans KR", "Apple SD Gothic Neo", system-ui, sans-serif;
+  }
+
+  /* 배경: 붉은 호텔 로비 벽 + 금색 마름모 무늬 + 위에서 내려오는 조명 */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(192, 163, 83, .40), transparent 60%),
+      repeating-linear-gradient(45deg, rgba(192, 163, 83, .12) 0 1px, transparent 1px 22px),
+      repeating-linear-gradient(-45deg, rgba(192, 163, 83, .12) 0 1px, transparent 1px 22px),
+      linear-gradient(var(--red), var(--red-dark));
+  }
+
+  /* 페이지 전체 폭 */
+  .wrap { max-width: 960px; margin: 0 auto; }
+
+  /* ===== 2. 프로필 박스 (나) ===== */
+  .profile {
+    background: var(--card);
+    border: 3px solid var(--gold);
+    border-radius: 14px;
+    padding: 28px 24px;
+    text-align: center;
+    box-shadow: 0 0 0 5px var(--red), 0 0 0 7px var(--gold), 0 18px 40px rgba(0, 0, 0, .45);
+  }
+
+  .stars { margin: 0 0 6px; color: var(--gold); letter-spacing: 4px; font-size: .9rem; }
+
+  .name {
+    margin: 0;
+    color: var(--red);
+    font-weight: 900;
+    font-size: clamp(2rem, 7vw, 2.6rem);
+  }
+  .major { margin: 4px 0 16px; color: var(--muted); }
+
+  /* 한 줄 소개: 말풍선 */
+  .quote {
+    display: inline-block;
+    margin: 0 0 18px;
+    padding: 8px 18px;
+    background: #fff;
+    border: 2px solid var(--red);
+    border-radius: 18px;
+    font-weight: 700;
+  }
+
+  /* 연락 수단 */
+  .contact { margin: 0 0 22px; }
+  .contact a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 8px;
+    background: var(--gold);
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .35);
+    text-decoration: none;
+    font-weight: 700;
+    word-break: break-all;
+  }
+  .contact a:hover, .contact a:active { background: var(--blue); }
+
+  /* ===== 3. 경험치 막대 ===== */
+  .xp { max-width: 420px; margin: 0 auto; text-align: left; }
+  .xp-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: .95rem;
+    font-weight: 700;
+  }
+  .xp-bar {
+    height: 14px;
+    background: var(--soft);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .xp-bar i {
+    display: block;
+    height: 100%;
+    width: 0;   /* 처음엔 0 → 스크립트가 값을 넣으면 차올라요 */
+    background: linear-gradient(90deg, var(--gold), #e2c877);
+    border-radius: 99px;
+    transition: width 1s .2s ease-out;
+  }
+
+  /* ===== 4. 퀘스트 로그 ===== */
+  .log { margin-top: 40px; }
+  .log-head { margin: 0 4px 16px; color: #fff; }
+  .log-head h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: .04em;
+  }
+  .log-head h2 span { color: var(--gold); }
+  .log-head p { margin: 4px 0 0; font-size: .92rem; opacity: .85; }
+
+  .quests {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  /* 카드 한 장 */
+  .quest {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+    background: var(--card);
+    border: 3px solid var(--gold);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 0 0 4px var(--red), 0 10px 24px rgba(0, 0, 0, .35);
+  }
+
+  /* 왼쪽 아이콘 칸 */
+  .quest-icon {
+    width: 64px;
+    height: 64px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: var(--red);
+    border: 2px solid var(--gold);
+  }
+  .quest-icon svg { width: 34px; height: 34px; }
+
+  .quest-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 4px;
+    font-size: .85rem;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .badge {
+    padding: 2px 8px;
+    border-radius: 99px;
+    background: var(--blue);
+    color: #fff;
+    font-size: .75rem;
+  }
+
+  .quest h3 {
+    margin: 0 0 6px;
+    color: var(--red);
+    font-size: 1.15rem;
+    font-weight: 900;
+    line-height: 1.35;
+  }
+  .quest-desc {
+    margin: 0 0 12px;
+    font-size: .92rem;
+    line-height: 1.6;
+    color: #2b3550;
+  }
+
+  /* 해시태그 */
+  .tags {
+    list-style: none;
+    margin: 0 0 14px;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tags li {
+    padding: 3px 9px;
+    border-radius: 6px;
+    background: var(--soft);
+    color: var(--blue);
+    font-size: .8rem;
+    font-weight: 700;
+  }
+
+  /* 들어가기 버튼 */
+  .enter {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 42px;
+    padding: 0 18px;
+    border-radius: 8px;
+    background: var(--red);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+  }
+  .enter:hover, .enter:active { background: var(--blue); }
+  .quest-url {
+    display: block;
+    margin-top: 8px;
+    font-size: .78rem;
+    color: var(--muted);
+    word-break: break-all;
+  }
+
+  /* 아직 열리지 않은 퀘스트 (6~10일차) */
+  .quest.locked {
+    background: rgba(250, 246, 238, .12);
+    border: 2px dashed rgba(192, 163, 83, .7);
+    box-shadow: none;
+    color: #fff;
+    align-items: center;
+  }
+  .quest.locked .quest-icon { background: transparent; border-style: dashed; }
+  .quest.locked h3 { margin: 0; color: #fff; opacity: .85; }
+  .quest.locked .quest-meta { color: var(--gold); }
+
+  /* 휴대폰에서는 카드 한 줄에 하나 */
+  @media (max-width: 720px) {
+    .quests { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 380px) {
+    .quest { grid-template-columns: 1fr; }
+  }
+
+  a:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition-duration: .01s !important; transition-delay: 0s !important; }
+  }
+</style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <!-- ========== 1. 나 (1일차 프로필) ========== -->
+    <header class="profile">
+      <p class="stars" aria-hidden="true">★★★★★</p>
+      <h1 class="name">권혁태</h1>
+      <p class="major">경희대학교 호텔경영학과</p>
+      <p class="quote">“KnocK, knock. Housekeeping!”</p>
+
+      <p class="contact">
+        <a href="mailto:gurxo0315@naver.com">✉ gurxo0315@naver.com</a>
+      </p>
+
+      <!-- 경험치 막대: 아래 quests 목록의 개수로 자동 계산돼요 -->
+      <div class="xp">
+        <div class="xp-label">
+          <span>경험치</span>
+          <span id="xpText">0 / 10일차</span>
+        </div>
+        <div class="xp-bar" role="progressbar" aria-label="경험치" aria-valuemin="0" aria-valuemax="10" id="xpBar">
+          <i id="xpFill"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- ========== 2. 퀘스트 로그 ========== -->
+    <!-- 카드는 아래 quests 목록을 보고 스크립트가 자동으로 만들어요 -->
+    <section class="log" aria-labelledby="logTitle">
+      <div class="log-head">
+        <h2 id="logTitle"><span>QUEST</span> LOG</h2>
+        <p>10일 과정에서 깬 퀘스트예요. 카드를 누르면 실제 결과물로 이동해요.</p>
+      </div>
+      <ul class="quests" id="questList"></ul>
+    </section>
+
+  </div>
+
+  <script>
+    // ===== 퀘스트 목록 =====
+    // 결과물이 하나 생길 때마다 여기에 한 줄씩 추가하면 돼요.
+    // 경험치 막대는 이 목록의 개수를 세서 자동으로 차올라요.
+    // link: "" 안에 결과물 주소를 넣으면 돼요.
+    const quests = [
+      {
+        day: 1,
+        name: "캐릭터 선택창 프로필",
+        desc: "Select를 누르면 호텔 로비에 호텔리어 캐릭터가 등장하고, 능력치 막대가 차오르는 자기소개 카드예요. Mail 버튼으로 메일 주소도 복사할 수 있어요.",
+        link: "https://fastidious-mousse-2dd9a7.netlify.app",
+        learned: "#HTML #CSS #JavaScript #SVG #CSS애니메이션 #클립보드복사"
+      },
+      {
+        day: 2,
+        name: "시험 스터디 플래너",
+        desc: "시험 범위 PDF를 넣으면 Claude가 과목별 개념 체크리스트로 정리해 줘요. 이해도가 낮은 약한 개념을 모아 보고, 공부 타이머로 남은 시간도 챙겨요.",
+        link: "https://wondrous-sunflower-fcfad8.netlify.app",
+        learned: "#JavaScript #Claude #PDF.js #localStorage #공부타이머"
+      },
+      {
+        day: 3,
+        name: "한국시리즈 단체응원 랜딩페이지",
+        desc: "한양대 학우들과 치킨집을 빌려 한국시리즈를 함께 보는 행사 홍보 페이지예요. 참여 인원을 고르면 입금할 금액이 자동으로 계산되고 바로 신청할 수 있어요.",
+        link: "https://effortless-daffodil-8c91a8.netlify.app",
+        learned: "#HTML #CSS #JavaScript #NanoBanana #신청폼 #fetch"
+      },
+      {
+        day: 4,
+        name: "금융·경제 아침 브리핑",
+        desc: "경제·금융·AI 키워드 뉴스를 RSS로 모아 Gemini가 기사마다 세 줄로 요약하고 원문 링크를 붙여요. 매일 아침 GitHub Actions가 알아서 새 브리핑을 만들어 줘요.",
+        link: "https://velvety-kangaroo-bc36a4.netlify.app",
+        learned: "#Python #RSS #GeminiAPI #GitHubActions #JSON"
+      },
+      {
+        day: 5,
+        name: "뉴스 브리핑 히스토리 대시보드",
+        desc: "4일차 브리핑에 쌓인 기사를 키워드·언론사·날짜별 그래프와 숫자 카드로 보여 줘요. Gemini가 시장 트렌드 총평도 세 줄로 정리해요.",
+        link: "https://storied-panda-824b6b.netlify.app",
+        learned: "#Chart.js #JavaScript #GeminiAPI #데이터시각화 #JSON"
+      },
+    ];
+
+    const GOAL = 10;   // 목표 일차
+
+    // ===== 경험치 막대 채우기 =====
+    const done = quests.length;
+    const percent = Math.min(100, Math.round(done / GOAL * 100));
+
+    document.getElementById("xpText").textContent = done + " / " + GOAL + "일차 (" + percent + "%)";
+    document.getElementById("xpBar").setAttribute("aria-valuenow", done);
+
+    // ===== 퀘스트 카드 아이콘 (일차 번호별, 그림 대신 코드로 그렸어요) =====
+    const ICONS = {
+      // 1일차: 호텔 명찰
+      1: '<svg viewBox="0 0 24 24" fill="none" stroke="#c0a353" stroke-width="2" stroke-linecap="round"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="8.5" cy="12" r="2"/><path d="M13 10.5h5M13 13.5h3.5"/></svg>',
+      // 2일차: 공부 체크리스트
+      2: '<svg viewBox="0 0 24 24" fill="none" stroke="#c0a353" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="m8 9 1.5 1.5L12 8M8 15l1.5 1.5L12 14M14 9.5h2M14 15.5h2"/></svg>',
+      // 3일차: 입장 티켓
+      3: '<svg viewBox="0 0 24 24" fill="none" stroke="#c0a353" stroke-width="2" stroke-linejoin="round"><path d="M3 8a2 2 0 0 0 0 4v4h18v-4a2 2 0 0 1 0-4V4H3z" transform="translate(0 2)"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg>',
+      // 4일차: 신문
+      4: '<svg viewBox="0 0 24 24" fill="none" stroke="#c0a353" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h4M7 16h4"/><rect x="13" y="11" width="4" height="5"/></svg>',
+      // 5일차: 막대 그래프
+      5: '<svg viewBox="0 0 24 24" fill="none" stroke="#c0a353" stroke-width="2" stroke-linecap="round"><path d="M4 20h16"/><rect x="6" y="11" width="3" height="9"/><rect x="11" y="6" width="3" height="14"/><rect x="16" y="14" width="3" height="6"/></svg>'
+    };
+    // 아이콘이 없는 일차에 쓰는 기본 아이콘: 별
+    const DEFAULT_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="#c0a353" stroke-width="2" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>';
+    const LOCK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="#c0a353" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+
+    // 글자 안의 < > 같은 기호가 HTML로 해석되지 않게 바꿔 주는 함수
+    function esc(text) {
+      return String(text).replace(/[&<>"']/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+      });
+    }
+
+    // ===== 퀘스트 카드 그리기 =====
+    const list = document.getElementById("questList");
+    let html = "";
+
+    quests.forEach(function (q) {
+      // "#HTML #CSS" → ["#HTML", "#CSS"] 로 나눠서 태그 칩으로 만들어요
+      const tags = q.learned.split(/\s+/).filter(Boolean)
+        .map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("");
+      const shortUrl = q.link.replace(/^https?:\/\//, "");
+      const button = q.link
+        ? '<a class="enter" href="' + esc(q.link) + '" target="_blank" rel="noopener">들어가기 ▶</a>' +
+          '<span class="quest-url">' + esc(shortUrl) + '</span>'
+        : '';
+
+      html +=
+        '<li class="quest">' +
+          '<div class="quest-icon" aria-hidden="true">' + (ICONS[q.day] || DEFAULT_ICON) + '</div>' +
+          '<div>' +
+            '<p class="quest-meta">DAY ' + q.day + ' QUEST <span class="badge">클리어</span></p>' +
+            '<h3>' + esc(q.name) + '</h3>' +
+            '<p class="quest-desc">' + esc(q.desc) + '</p>' +
+            '<ul class="tags" aria-label="쓰인 기능">' + tags + '</ul>' +
+            button +
+          '</div>' +
+        '</li>';
+    });
+
+    // 아직 안 연 일차는 잠긴 카드로 보여 줘요 (목표 10일차까지)
+    for (let d = quests.length + 1; d <= GOAL; d++) {
+      html +=
+        '<li class="quest locked">' +
+          '<div class="quest-icon" aria-hidden="true">' + LOCK_ICON + '</div>' +
+          '<div>' +
+            '<p class="quest-meta">DAY ' + d + ' QUEST</p>' +
+            '<h3>아직 열리지 않은 퀘스트</h3>' +
+          '</div>' +
+        '</li>';
+    }
+
+    list.innerHTML = html;
+
+    // 화면이 그려진 다음에 너비를 넣어야 차오르는 애니메이션이 보여요
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        document.getElementById("xpFill").style.width = percent + "%";
+      });
+    });
+  </script>
+</body>
+</html>
